@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-
+const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -26,7 +26,16 @@ const userSchema = new mongoose.Schema({
     cpassword:{
         type:String,
         required:true
-    }
+    },
+    // here we also need tokens in the db so that we can understand the token user have is valid.
+    tokens:[
+        {
+            token:{
+                type:String,
+                required:true
+            }
+        }
+    ]
 })
 
 //hashing the password
@@ -41,6 +50,20 @@ userSchema.pre('save', async function (next) {
     next()
 })
 
+
+//generating jwt TOKEN //.sign takes two parameters 1) payload 2)secret key
+userSchema.methods.generateAuthToken = async function (){
+    try {
+        let token = jwt.sign({_id:this._id}, process.env.SECRET_KEY)
+
+        //saving the token generated.
+        this.tokens = this.tokens.concat({ token : token }) //the token on right side is above one.
+        await this.save()
+        return token
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 //collection creation 
 const User = mongoose.model('USER', userSchema)
