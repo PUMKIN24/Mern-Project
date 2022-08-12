@@ -6,22 +6,26 @@ const app = express()
 
 
 //Schema
-const User = require('./model/userSchema')
+//const User = require('./model/userSchema')
+//routes
 
 
 //dotenv
 dotenv.config({path : './config.env'})
-
-//MONGO DB
-const DB = process.env.DATABASE
-
-mongoose.connect(DB).then(() => {console.log(`DB CONNECTED`)})
-.catch((err) => console.log(`DB ERROR`))                                                                                        
+//DB
+require('./db/conn')
+//middleware  json parse
+app.use(express.json())
+//middleware  routes
+app.use(require('./router/auth'))
+//Middleware
+const middleware = (req,res,next) => {
+    console.log('hello my middleware')
+    next();
+}
 
 //PAGES
-app.get('/', (req,res)=>{
-    res.send(`hello world from server`)
-})   
+   
 
 app.get('/about', (req,res)=>{
     res.send(`hello About world from server`)
