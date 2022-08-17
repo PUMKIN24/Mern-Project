@@ -1,11 +1,19 @@
 import React from 'react'
+import mypic from '../images/mypic.jpeg'
 
 const About = () => {
   return (
-    <div>
-        <p>WELCOME</p>
-        <h1>MERN Developer about</h1>
-    </div>
+    <>
+      <div className="container">
+        <form>
+          <div className="row">
+            <div className="col-md-4">
+              <img src={mypic} alt="" />
+           </div> 
+          </div>
+        </form>
+      </div>
+    </>
   )
 }
 
